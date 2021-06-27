@@ -1,0 +1,78 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+1. The test scores for English and Math for a class are given below:
+English: 56 75 45 71 62 64 58 80 76 61
+Math: 66 70 40 60 65 56 59 77 67 63
+(a) Check the correlation between scores assuming that they are normally distributed.
+(b) Check the correlation between scores assuming that they are not normally distributed.
+ 
+
+```{r}
+English <- c(56,75,45, 71,62,64,58,80,76,61)
+Math <- c(66, 70, 40, 60, 65, 56, 59, 77, 67, 63)
+cor.test(English, Math, method="pearson") 
+```
+```{r}
+cor.test(English, Math, method="spearman")
+```
+2. The airquality dataset contains the daily air quality measurements in New York, from
+May to September 1973. Without assuming the data to have normal distribution, test at
+α = 0.05 significance level if the monthly ozone density in New York has identical data
+distributions from May to September 197
+```{r}
+head(airquality)
+boxplot(Ozone ~ Month, data = airquality)
+```
+```{r}
+kruskal.test(Ozone ~ Month, data = airquality)
+```
+3. A data science student is using three machine learning algorithms to analyze a given
+dataset. She tests her model first with a Decision Tree, secondly with a Logistic Regression and then with a Naive Bayes algorithm. She uses 10-fold Cross Validation for each
+model. With this method, she randomly divides her dataset into 10 parts and uses 9 of
+those parts for training and reserves one tenth for testing. She repeats this procedure
+10 times, each time reserving a different tenth-part for testing. Although the cross validation uses different test sets for each run, she makes sure that the three algorithms get
+the same test set. Then, she records the Accuracy for each fold. The accuracy for each
+fold of the algorithms are given as follows:
+Decision Tree: 75, 79, 69, 78, 65, 87, 74, 81, 77, 85
+Logistic Regression: 85, 68, 78, 73, 69, 76, 69, 80, 73, 67
+Naive Bayes: 86, 75, 79, 82, 68, 69, 77, 81, 80, 79
+(a) Does her comparison experiment has a sampling design or block design?
+(b) Can she conclude that any one of the machine learning algorithm is more accurate
+than the others?
+i. Create vectors for each algorithm. Check the means of the accuracy reported
+for the three models.
+ii. Create a dataframe for these three vectors.
+iii. Run friedman.test command to check the significance of the comparison.
+Her experiment has a block design.
+
+```{r}
+DT<-c(75, 79, 69, 78, 65, 87, 74, 81, 77, 85)
+LR<-c(85, 68, 78, 73, 69, 76, 69, 80, 73, 67)
+NB<-c(86, 75, 79, 82, 68, 69, 77, 81, 80, 79)
+mean(DT)
+
+mean(LR)
+
+mean(NB)
+
+```
+```{r}
+DT<-c(75, 79, 69, 78, 65, 87, 74, 81, 77, 85)
+LR<-c(85, 68, 78, 73, 69, 76, 69, 80, 73, 67)
+NB<-c(86, 75, 79, 82, 68, 69, 77, 81, 80, 79)
+Accuracy <- c(DT,LR,NB)
+Testnames<- rep(c('DT','LR', 'NB'), each=10, rep =3)
+Folds <- as.factor(rep(c(1:10), 3))
+data.frame(Accuracy,Testnames,Folds)
+
+```
+```{r}
+friedman.test(Accuracy, Testnames, Folds)
+# friedman.test(Accuracy ~ Testnames | Folds) # another option
+```
+
+
+
